@@ -10,16 +10,15 @@ import (
 func startRepl() {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
-	fmt.Print(">>>>")
-	scanner.Scan()
-	text := scanner.Text()
-	fmt.Println("echoing: ", text)
+		fmt.Print(">>>>")
+		scanner.Scan()
+		text := scanner.Text()
+		fmt.Println("echoing: ", text)
 	}
 }
-func cleanInput(str string) []string{
-	lowered:=strings.ToLower(str)
-	words:=str.Fields(lowered)
+func cleanInput(str string) []string {
+
+	words := strings.Fields(strings.ToLower(str))
 	return words
 
 }
-
