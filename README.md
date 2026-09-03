@@ -1,4 +1,4 @@
-# gocli 🚀
+# gocli
 
 A lightweight, fast, and practical **Website & REST API Health Monitor** built in Go.
 
@@ -6,19 +6,19 @@ No bloated third-party dependencies—built entirely using the Go standard libra
 
 ---
 
-## ✨ Features
+## Features
 
-- ⚡ **Instant Status Checks**: Check status codes (200, 404, 500), response latency, and payload sizes.
-- 🔒 **SSL/TLS Certificate Tracker**: Automatically inspects HTTPS certificates and calculates days remaining until expiration.
-- 🚀 **Concurrent Multi-Endpoint Probing**: Uses Go goroutines (`sync.WaitGroup`) to check multiple saved endpoints simultaneously in milliseconds.
-- 💾 **Persistent JSON Storage**: Easily add and remove target endpoints saved in `~/.gocli/sites.json`.
-- ⏱️ **Live Watch Mode**: Continuously monitor your APIs and microservices with customizable intervals (`5s`, `10s`, `1m`).
-- 🎨 **Colorized Terminal Output**: Clean ANSI-formatted status badges and tab-aligned summary tables.
-- 📦 **Zero External Dependencies**: Compiles to a single static standalone binary.
+- **Instant Status Checks**: Check status codes (200, 404, 500), response latency, and payload sizes.
+- **SSL/TLS Certificate Tracker**: Automatically inspects HTTPS certificates and calculates days remaining until expiration.
+- **Concurrent Multi-Endpoint Probing**: Uses Go goroutines (`sync.WaitGroup`) to check multiple saved endpoints simultaneously in milliseconds.
+- **Persistent JSON Storage**: Easily add and remove target endpoints saved in `~/.gocli/sites.json`.
+- **Live Watch Mode**: Continuously monitor your APIs and microservices with customizable intervals (`5s`, `10s`, `1m`).
+- **Colorized Terminal Output**: Clean ANSI-formatted status badges and tab-aligned summary tables.
+- **Zero External Dependencies**: Compiles to a single static standalone binary.
 
 ---
 
-## 🛠️ Installation & Build
+## Installation & Build
 
 Ensure you have [Go](https://go.dev/dl/) installed (1.20+ recommended).
 
@@ -35,7 +35,7 @@ On Windows, this produces `gocli.exe`.
 
 ---
 
-## 📖 Usage & Commands
+## Usage & Commands
 
 ### 1. Check a Single Endpoint
 Check any URL on the fly:
@@ -108,7 +108,7 @@ Press `Ctrl+C` at any time to gracefully stop monitoring.
 
 ---
 
-## 🧪 Running Tests
+## Running Tests
 
 Unit tests are included and use Go's built-in `httptest.Server`:
 
@@ -118,7 +118,7 @@ go test -v ./...
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 gocli/
@@ -132,5 +132,5 @@ gocli/
 
 ---
 
-## 📄 License
+## License
 MIT
