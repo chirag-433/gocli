@@ -18,7 +18,7 @@ type Site struct {
 func getStoragePath() (string, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		return "sites.json", nil
+		return "sites.json", err
 	}
 	dir := filepath.Join(homeDir, ".gocli")
 	if err := os.MkdirAll(dir, 0755); err != nil {
