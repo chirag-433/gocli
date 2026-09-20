@@ -108,16 +108,6 @@ Press `Ctrl+C` at any time to gracefully stop monitoring.
 
 ---
 
-## Running Tests
-
-Unit tests are included and use Go's built-in `httptest.Server`:
-
-```bash
-go test -v ./...
-```
-
----
-
 ## Project Structure
 
 ```text

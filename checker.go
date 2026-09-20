@@ -28,6 +28,7 @@ type CheckResult struct {
 	SizeBytes     int64
 	SSLExpiryDays int
 	Error         error
+	ServerName 		string
 }
 
 func NormalizeURL(rawURL string) string {
@@ -68,9 +69,11 @@ func CheckSite(name, rawURL string, timeout time.Duration) CheckResult {
 	bodyBytes, _ := io.ReadAll(io.LimitReader(resp.Body, 10*1024*1024))
 	size := int64(len(bodyBytes))
 
+	var serverName string
 	sslExpiryDays := -1
 	if resp.TLS != nil && len(resp.TLS.PeerCertificates) > 0 {
 		cert := resp.TLS.PeerCertificates[0]
+		serverName = resp.TLS.ServerName
 		remaining := time.Until(cert.NotAfter)
 		sslExpiryDays = int(remaining.Hours() / 24)
 	}
@@ -83,6 +86,7 @@ func CheckSite(name, rawURL string, timeout time.Duration) CheckResult {
 		Latency:       latency,
 		SizeBytes:     size,
 		SSLExpiryDays: sslExpiryDays,
+		ServerName: 	 serverName,
 		Error:         nil,
 	}
 }
@@ -134,6 +138,8 @@ func PrintCheckResult(res CheckResult) {
 	fmt.Printf("%sStatus:%s        %s[%s]%s\n", colorBold, colorReset, statusColor, res.StatusText, colorReset)
 	fmt.Printf("%sLatency:%s       %s%v%s\n", colorBold, colorReset, latencyColor, res.Latency.Round(time.Millisecond), colorReset)
 	fmt.Printf("%sPayload Size:%s  %s\n", colorBold, colorReset, FormatBytes(res.SizeBytes))
+	fmt.Printf("%sServer Name:%s   %s%s %s\n", colorBold, colorReset, colorGreen, res.ServerName, colorReset)
+
 
 	if res.SSLExpiryDays >= 0 {
 		var sslColor string
