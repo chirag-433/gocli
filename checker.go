@@ -151,6 +151,7 @@ func PrintCheckResult(res CheckResult) {
 		default:
 			sslColor = colorRed
 		}
+		
 		fmt.Printf("%sSSL Cert:%s      %sValid (expires in %d days)%s\n", colorBold, colorReset, sslColor, res.SSLExpiryDays, colorReset)
 	} else if strings.HasPrefix(res.URL, "https://") {
 		fmt.Printf("%sSSL Cert:%s      %sNot available%s\n", colorBold, colorReset, colorGray, colorReset)
