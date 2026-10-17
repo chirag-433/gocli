@@ -139,8 +139,6 @@ func PrintCheckResult(res CheckResult) {
 	fmt.Printf("%sLatency:%s       %s%v%s\n", colorBold, colorReset, latencyColor, res.Latency.Round(time.Millisecond), colorReset)
 	fmt.Printf("%sPayload Size:%s  %s\n", colorBold, colorReset, FormatBytes(res.SizeBytes))
 	fmt.Printf("%sServer Name:%s   %s%s %s\n", colorBold, colorReset, colorGreen, res.ServerName, colorReset)
-
-
 	if res.SSLExpiryDays >= 0 {
 		var sslColor string
 		switch {
