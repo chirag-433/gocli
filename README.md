@@ -43,6 +43,9 @@ Check any URL on the fly:
 gocli check https://google.com
 # or check a local server
 gocli check localhost:8080/health
+
+# Return a failing exit code for network errors or non-2xx responses
+gocli check --strict https://api.example.com/health
 ```
 
 **Output:**
@@ -60,8 +63,10 @@ SSL Cert:      Valid (expires in 59 days)
 
 ### 2. List & Probe All Saved Endpoints
 Concurrently tests all saved endpoints and displays an aligned status table:
+By default, `list` displays endpoint status without changing the command's exit code. Use `--strict` to return a failing exit code if any endpoint has a network error or a status outside 200–299:
 ```bash
 gocli list
+gocli list --strict
 ```
 
 **Output:**

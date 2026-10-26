@@ -20,8 +20,8 @@ func printBanner() {
 func printUsage() {
 	printBanner()
 	fmt.Printf("%sUSAGE:%s\n", colorBold, colorReset)
-	fmt.Println("  gocli check <url>             Quickly check status, latency & SSL of a single URL")
-	fmt.Println("  gocli list                    Check and display status for all saved endpoints")
+	fmt.Println("  gocli check [--strict] <url>  Quickly check status, latency & SSL of a single URL")
+	fmt.Println("  gocli list [--strict]         Check and display status for all saved endpoints")
 	fmt.Println("  gocli add <name> <url>        Save a new endpoint to monitor")
 	fmt.Println("  gocli remove <name>           Remove an endpoint from the saved list")
 	fmt.Println("  gocli watch [interval]        Continuously monitor saved endpoints (e.g. 5s, 10s)")
@@ -35,29 +35,57 @@ func printUsage() {
 	fmt.Println("  gocli watch 5s")
 }
 
-func handleCheck(args []string) {
-	if len(args) < 1 {
-		fmt.Printf("%sError: Missing URL to check.%s\n", colorRed, colorReset)
-		fmt.Println("Usage: gocli check <url>")
-		os.Exit(1)
+func parseStrictArgs(args []string, command string, positionalCount int) ([]string, bool, bool) {
+	strict := false
+	positionals := make([]string, 0, positionalCount)
+	for _, arg := range args {
+		if arg == "--strict" {
+			strict = true
+			continue
+		}
+		if strings.HasPrefix(arg, "-") {
+			fmt.Fprintf(os.Stderr, "Unknown option for %s: %s\n", command, arg)
+			return nil, false, false
+		}
+		positionals = append(positionals, arg)
+	}
+	return positionals, strict, true
+}
+
+func handleCheck(args []string) int {
+	positionals, strict, valid := parseStrictArgs(args, "check", 1)
+	if !valid || len(positionals) != 1 {
+		fmt.Fprintln(os.Stderr, "Usage: gocli check [--strict] <url>")
+		return 2
 	}
 
-	url := args[0]
+	url := positionals[0]
 	fmt.Printf("Pinging %s%s%s...\n\n", colorCyan, url, colorReset)
 	result := CheckSite("target", url, 8*time.Second)
 	PrintCheckResult(result)
+
+	if strict {
+		return strictExitCode([]CheckResult{result})
+	}
+	return 0
 }
 
-func handleList() {
+func handleList(args []string) int {
+	positionals, strict, valid := parseStrictArgs(args, "list", 0)
+	if !valid || len(positionals) != 0 {
+		fmt.Fprintln(os.Stderr, "Usage: gocli list [--strict]")
+		return 2
+	}
+
 	sites, err := LoadSites()
 	if err != nil {
 		fmt.Printf("%sFailed to load sites: %v%s\n", colorRed, err, colorReset)
-		os.Exit(1)
+		return 1
 	}
 
 	if len(sites) == 0 {
 		fmt.Printf("%sNo saved endpoints found.%s Use 'gocli add <name> <url>' to add one.\n", colorYellow, colorReset)
-		return
+		return 0
 	}
 
 	fmt.Printf("Checking %d endpoint(s)...\n\n", len(sites))
@@ -74,6 +102,10 @@ func handleList() {
 	wg.Wait()
 
 	printResultsTable(results)
+	if strict {
+		return strictExitCode(results)
+	}
+	return 0
 }
 
 func printResultsTable(results []CheckResult) {
@@ -92,7 +124,9 @@ func printResultsTable(results []CheckResult) {
 			latencyStr = fmt.Sprintf("%s%v%s", colorRed, res.Latency.Round(time.Millisecond), colorReset)
 			sslStr = fmt.Sprintf("%s-%s", colorGray, colorReset)
 		} else {
-			upCount++
+			if isHealthy(res) {
+				upCount++
+			}
 			if res.StatusCode >= 200 && res.StatusCode < 300 {
 				statusStr = fmt.Sprintf("%s[%d OK]%s", colorGreen, res.StatusCode, colorReset)
 			} else if res.StatusCode >= 300 && res.StatusCode < 400 {
@@ -231,12 +265,13 @@ func main() {
 
 	cmd := strings.ToLower(os.Args[1])
 	args := os.Args[2:]
+	exitCode := 0
 
 	switch cmd {
 	case "check":
-		handleCheck(args)
+		exitCode = handleCheck(args)
 	case "list", "ls":
-		handleList()
+		exitCode = handleList(args)
 	case "add":
 		handleAdd(args)
 	case "remove", "rm", "delete":
@@ -250,6 +285,10 @@ func main() {
 	default:
 		fmt.Printf("%sUnknown command: %q%s\n\n", colorRed, cmd, colorReset)
 		printUsage()
-		os.Exit(1)
+		exitCode = 1
+	}
+
+	if exitCode != 0 {
+		os.Exit(exitCode)
 	}
 }

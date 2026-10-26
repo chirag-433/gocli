@@ -31,6 +31,19 @@ type CheckResult struct {
 	ServerName 		string
 }
 
+func isHealthy(result CheckResult) bool {
+	return result.Error == nil && result.StatusCode >= 200 && result.StatusCode < 300
+}
+
+func strictExitCode(results []CheckResult) int {
+	for _, result := range results {
+		if !isHealthy(result) {
+			return 1
+		}
+	}
+	return 0
+}
+
 func NormalizeURL(rawURL string) string {
 	rawURL = strings.TrimSpace(rawURL)
 	if !strings.HasPrefix(rawURL, "http://") && !strings.HasPrefix(rawURL, "https://") {
