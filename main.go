@@ -159,6 +159,9 @@ func printResultsTable(results []CheckResult) {
 		}
 
 		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", statusStr, res.Name, latencyStr, sslStr, res.URL)
+		if res.Error != nil {
+			fmt.Fprintf(w, "    Error: %v\n", res.Error)
+		}
 	}
 	w.Flush()
 
