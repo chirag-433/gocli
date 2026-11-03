@@ -111,7 +111,16 @@ gocli watch 10s
 
 Press `Ctrl+C` at any time to gracefully stop monitoring.
 
+### 6. Show the CLI version
+```bash
+gocli version
+# or
+gocli --version
+```
+
 ---
+
+
 
 ## Project Structure
 
