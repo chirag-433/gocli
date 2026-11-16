@@ -169,8 +169,8 @@ func printResultsTable(results []CheckResult) {
 }
 
 func handleAdd(args []string) {
-	if len(args) < 2 {
-		fmt.Printf("%sError: 'add' requires <name> and <url>.%s\n", colorRed, colorReset)
+	if len(args) != 2 {
+		fmt.Printf("%sError: 'add' requires exactly <name> and <url>.%s\n", colorRed, colorReset)
 		fmt.Println("Usage: gocli add <name> <url>")
 		os.Exit(1)
 	}
@@ -188,8 +188,8 @@ func handleAdd(args []string) {
 }
 
 func handleRemove(args []string) {
-	if len(args) < 1 {
-		fmt.Printf("%sError: 'remove' requires <name>.%s\n", colorRed, colorReset)
+	if len(args) != 1 {
+		fmt.Printf("%sError: 'remove' requires exactly <name>.%s\n", colorRed, colorReset)
 		fmt.Println("Usage: gocli remove <name>")
 		os.Exit(1)
 	}
